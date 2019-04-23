@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PriceIT</title>
+    <meta charset="utf-8">
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            
+            ajaxCall("GET", "../api/constants", "", successGetConstants, error);//get all constants from DB
+
+          //  $("#pForm").submit(f1);
+        });
+
+        function error(err) { // this function is activated in case of a failure
+            swal("Error: " + err);
+        }
+        function successGetConstants(constantsdata) {// this function is activated in case of a success
+            constants = constantsdata;
+            console.log(constants);
+
+            $('#boxWorkCost').val(constants[0].Cost);
+            $('#laquerWorkCost').val(constants[1].Cost);
+            $('#basicMaterialCoefficient').val(constants[2].Cost);
+            $('#drawerCoefficientCost').val(constants[3].Cost);
+            $('#plateThickness').val(constants[4].Cost);
+            $('#railsCost').val(constants[5].Cost);
+            $('#woodBoxDrawersWorkCost').val(constants[6].Cost);
+            $('#LegraboxDrawerWork').val(constants[7].Cost);
+            $('#ScalaDrawerWork').val(constants[8].Cost);
+            $('#ScalaCoefficient').val(constants[9].Cost);
+            $('#LegraboxInternalRailsCost').val(constants[10].Cost);
+            $('#ScalaInternalRailsCost').val(constants[11].Cost);
+            $('#LegraboxExternalRailsCost').val(constants[12].Cost);                   
+            $('#ScalaExternalRailsCost').val(constants[13].Cost);
+        }
+
+        function updateConstants() {
+
+            constants = {             
+                boxWorkCost: $("#boxWorkCost").val(),
+                laquerWorkCost: $("#laquerWorkCost").val(),
+                //Age: parseFloat($("#age").val()),
+                basicMaterialCoefficient: $("#basicMaterialCoefficient").val(),
+                drawerCoefficientCost: $("#drawerCoefficientCost").val(),
+                plateThickness: $("#plateThickness").val(),
+                woodBoxDrawersWorkCost: $("#woodBoxDrawersWorkCost").val(),
+                LegraboxDrawerWork: $("#LegraboxDrawerWork").val(),
+                ScalaDrawerWork: $("#ScalaDrawerWork").val(),
+                ScalaCoefficient: $("#ScalaCoefficient").val(),
+                LegraboxInternalRailsCost: $("#LegraboxInternalRailsCost").val(),
+                ScalaInternalRailsCost: $("#ScalaInternalRailsCost").val(),
+                LegraboxExternalRailsCost: $("#LegraboxExternalRailsCost").val(),
+                ScalaExternalRailsCost: $("#ScalaExternalRailsCost").val()               
+            }
+            ajaxCall("PUT", "../api/constants/?Id=" + personId, JSON.stringify(Person), successUpdate, error1);
+        }
+    </script>
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="insertBox.html">צור פרויקט</a></li>
+                <li><a href="projectsList.html">פרויקטים</a></li>
+                <li class="active"><a href="editConstants2.html">עדכון פרמטרים</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="direction:rtl">
+        <form id="pForm">
+            <h1>עדכון פרמטרים</h1>
+            <br />
+            <div class="form-group col-sm-12">
+                <label for="boxWorkCost"><span class="red-star">★ </span>עלות עבודה על ארגז</label>
+                <input type="number" class="form-control" id="boxWorkCost" placeholder="עלות עבודה על ארגז" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="laquerWorkCost"><span class="red-star">★ </span>עלות עבודה - לקה פורניר</label>
+                <input type="number" class="form-control" id="laquerWorkCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="basicMaterialCoefficient"><span class="red-star">★ </span>עלות עבודה על חומר בסיס</label>
+                <input type="number" class="form-control" id="basicMaterialCoefficient" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="drawerCoefficientCost"><span class="red-star">★ </span>מקדם למגירה</label>
+                <input type="number" class="form-control" id="drawerCoefficientCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="plateThickness"><span class="red-star">★ </span>עובי פלטה (ס"מ)</label>
+                <input type="number" class="form-control" id="plateThickness" placeholder="עובי פלטה" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="railsCost"><span class="red-star">★ </span>עלות מסילות</label>
+                <input type="number" class="form-control" id="railsCost" placeholder="עלות מסילות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="woodBoxDrawersWorkCost"><span class="red-star">★ </span>עלות עבודה למגירות עץ</label>
+                <input type="number" class="form-control" id="woodBoxDrawersWorkCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="LegraboxDrawerWork"><span class="red-star">★ </span>עלות עבודה למגירות Legrabox</label>
+                <input type="number" class="form-control" id="LegraboxDrawerWork" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="ScalaDrawerWork"><span class="red-star">★ </span>עלות עבודה למגירות Scala</label>
+                <input type="number" class="form-control" id="ScalaDrawerWork" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="ScalaCoefficient"><span class="red-star">★ </span>מקדם מכפיל עבור מגירות Scala</label>
+                <input type="number" class="form-control" id="ScalaCoefficient" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="LegraboxInternalRailsCost"><span class="red-star">★ </span>עלות מסילות Legrabox פנימיות </label>
+                <input type="number" class="form-control" id="LegraboxInternalRailsCost" placeholder="עלות מסילות Legrabox פנימיות " value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="LegraboxExternalRailsCost"><span class="red-star">★ </span>עלות מסילות Legrabox חיצוניות </label>
+                <input type="number" class="form-control" id="LegraboxExternalRailsCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label for="ScalaInternalRailsCost"><span class="red-star">★ </span>עלות מסילות Scala פנימיות </label>
+                <input type="number" class="form-control" id="ScalaInternalRailsCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="ScalaExternalRailsCost"><span class="red-star">★ </span>עלות מסילות Scala חיצוניות </label>
+                <input type="number" class="form-control" id="ScalaExternalRailsCost" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">עדכן</button>
+            <br /> <br />
+
+        </form>
+    </div>
+</body>
+</html>

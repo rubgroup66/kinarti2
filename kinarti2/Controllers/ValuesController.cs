@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace kinarti2.Controllers
+namespace kinarti.Controllers
 {
     public class ValuesController : ApiController
     {

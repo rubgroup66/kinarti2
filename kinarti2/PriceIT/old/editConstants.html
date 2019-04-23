@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PriceIT</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+        button {
+            margin-left: 10px;
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+        #editDiv {
+            direction:rtl;
+            width:50%;
+            margin-left:25%;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        // will run when the document is ready
+        $(document).ready(function () {
+            // once the document is ready we fetch a list of materials from the server
+            ajaxCall("GET", "../api/constants", "", getSuccess, error);
+
+            $("#pForm").submit(f1); // wire the submit event to a function called f1
+            $("#editDiv").hide();
+
+            mode = "";
+
+            $("#cancelSaveBTN").on("click", function () {
+                box = null;
+                $("#editDiv").hide();
+                if (mode == "new")/* $("#pForm").show();*/
+                    mode = "";
+            });
+            $("#newBTN").on("click", function () {
+                box = null;
+                mode = "new";
+                //$("#pForm").hide();
+                $("#editDiv").show();
+                clearFields();
+                $("#editDiv :input").prop("disabled", false); // new mode: enable all controls in the form
+            });
+        });
+
+        function updateBox() { //this function will insert new material to DB or update existing one by mode status
+            Box = { // Note that the name of the fields must be identical to the names of the properties of the object in the server
+                Height: $("#height").val(),
+                Type: $("#type").val(),
+                // CostForBasicMaterial: $("#costForBasicMaterial").val(),
+                Width: $("#width").val(),
+                Depth: $("#depth").val(),
+            }
+            if (mode == "new") {
+                ajaxCall("POST", "../api/boxes", JSON.stringify(Box), success, error);
+            }
+            else
+                if (mode == "edit") {
+                    ajaxCall("PUT", "../api/boxes/?Id=" + boxID, JSON.stringify(Box), successUpdate, error1);
+                }
+        }
+
+        function success(data) {
+            swal("Added Successfuly!", "Good luck in finding a partner", "success");
+        }
+        function error(err) {
+            alert("שגיאה בהזנת ארגז");
+        }
+
+        function error1() {
+            swal("שגיאה בעדכון הארגז!");
+        }
+
+        function successUpdate(data) {
+            swal("Updated Successfuly!", "Good luck in finding a partner", "success");
+        }
+
+        // wire all the buttons to their functions
+        function buttonEvents() {
+
+            $(document).on("click", ".editBtn", function () {
+                markSelected(this);
+                $("#editDiv").show();
+                $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
+                populateFields(this.getAttribute('data-boxId')); // fill the form fields according to the selected row
+            });
+
+            $(document).on("click", ".viewBtn", function () {
+                markSelected(this);
+                $("#editDiv").show();
+                row.className = 'selected';
+                $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form ***
+                populateFields(this.getAttribute('data-boxId'));
+            });
+
+            $(document).on("click", ".deleteBtn", function () {
+                markSelected(this);
+                var boxId = this.getAttribute('data-boxId');
+                swal({ // this will open a dialouge
+                    title: "האם אתה בטוח??",
+                    text: "",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                })
+                    .then(function (willDelete) {
+                        if (willDelete) DeleteBox(boxId);
+                        else swal("Not Deleted!");
+                    });
+            });
+        }
+
+        // mark the selected row
+        function markSelected(btn) {
+            $("#boxesTable").removeClass("selected"); // remove seleced class from rows that were selected before
+            row = (btn.parentNode).parentNode; // button is in TD which is in Row
+            row.className = 'selected'; // mark as selected
+        }
+
+        // Delete a box from the server
+        function DeleteBox(id) {
+            ajaxCall("DELETE", "../api/boxes/" + id, "", deleteSuccess, error);
+        }
+
+
+        function f1() {
+            updateBox();
+            return false; // the return false will prevent the form from being submitted
+            // hence the page will not reload
+        }
+
+        // fill the form fields
+        function populateFields(boxId) {
+            box = getBox(boxId);
+            $("#id").val(box.ID);
+            $("#type").val(box.Type);
+            $("#height").val(box.Height);
+            $("#width").val(box.Width);
+            $("#depth").val(box.Depth);
+            //  $("#costForBasicMaterial").val(box.CostForBasicMaterial);
+            $("#Description").val("");
+            constants = (JSON.stringify(constantsdata));
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#lacquerWorkCost").val(constants.lacquerWorkCost);
+            
+            $("#basicMaterialCoefficient").val(constants.basicMaterialCoefficient);
+            $("#drawerCoefficientCost").val(constants.drawerCoefficientCost);
+            $("#plateThickness").val(constants.plateThickness);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+            $("#boxWorkCost").val(constants.boxWorkCost);
+
+        }
+
+        // fill the form fields
+        function clearFields() {
+            // box = getBoxes("");
+            $("#id").val("");
+            $("#type").val("");
+            $("#height").val("");
+            $("#width").val("");
+            //  $("#costForBasicMaterial").val("");
+            $("#Description").val("");
+        }
+
+        // get a box according to its Id
+        function getBox(id) {
+            for (i in boxes) {
+                if (boxes[i].ID == id)
+                    return boxes[i];
+            }
+            return null;
+        }
+
+        // success callback function after update
+        function updateSuccess(constantsdata) {
+            tbl.clear();
+            redrawTable(tbl, constantsdata);
+            buttonEvents();
+            //$("#editDiv").hide();
+            swal("עודכן בהצלחה!", "הפריט עודכן", "הצלחה");
+        }
+
+        // success callback function after delete
+        function deleteSuccess(constantsdata) {
+            tbl.clear();
+            redrawTable(tbl, constantsdata);
+            buttonEvents(); // after redrawing the table, we must wire the new buttons
+            //$("#editDiv").hide();
+            swal("הפריט הוסר בהצלחה", "נשמר בהצלחה", "הפעולה בוצעה");
+        }
+
+        // redraw a datatable with new data
+        //function redrawTable(tbl, data) {
+        //    tbl.clear();
+        //    for (var i = 0; i < data.length; i++) {
+        //        tbl.row.add(data[i]);
+        //    }
+        //    tbl.draw();
+        //}
+        var constants;
+        // this function is activated in case of a success
+        //function getSuccess(constantsdata) {
+        //    console.log(constantsdata);
+        //    constants = constantsdata; // keep the cars array in a global variable;
+        //    try {
+        //        tbl = $('#boxesTable').DataTable({
+        //            data: constantsdata,
+        //            pageLength: 5,
+        //            columns: [
+        //                {
+        //                    render: function (data, type, row, meta) {
+        //                        let dataBox = "data-boxId='" + row.ID + "'";
+        //                        deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataBox + "> מחק </button>";
+        //                        editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataBox + "> עדכן </button>";
+        //                        // viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataBox + "> הצג </button>";
+        //                        return editBtn + deleteBtn;
+        //                    }
+        //                },
+        //                { data: "Depth" },
+        //                { data: "Width" },
+        //                { data: "Height" },
+        //                { data: "Type" },
+        //                { data: "ID" },
+        //            ],
+        //        });
+        //        buttonEvents();
+        //        constants = (JSON.stringify(constantsdata));
+        //    }
+        //    catch (err) {
+        //        alert(err);
+        //    }
+        //}
+
+        // this function is activated in case of a failure
+        function error(err) {
+            swal("Error: " + err);
+        }
+             //function updateBox() {
+            //    let boxAfterEdit = {
+            //        Id: box.Id,
+            //        Depth: $("#depth").val(),
+            //        Width: $("#width").val(),
+            //        Height: $("#height").val(),
+            //        Type: $("#type").val(),
+            //     //   CostForBasicMaterial: $("#costForBasicMaterial").val(),
+            //     //   Description: $("#Description").val(),
+            //    }
+            //    // update a new Box record to the server
+            //    ajaxCall("PUT", "../api/boxes"+ boxId, JSON.stringify(boxAfterEdit), updateSuccess, error);
+            //    return false;
+            //}
+    </script>
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="editMaterials.html">חומרי גלם</a></li>
+                <li><a href="editBoxes.html">ארגזות</a></li>
+                <li><a href="editHandles.html">ידיות</a></li>
+                <li><a href="editHinges.html">צירים</a></li>
+                <li><a href="editConstants.html">ניהול קבועי מערכת</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <form id="pForm">
+            <!--<table id="boxesTable" class="display nowrap" style="width:60%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>עבודה לארגז</th>
+                        <th>עבודה לציפוי </th>
+                        <th>עבודה לחומר בסיס</th>
+                        <th>מקדם למגירות</th>
+                        <th>עובי פלטה</th>
+                        <th>עלות מסילות</th>
+                        <th>עלות מגירות עץ</th>
+                        <th>עלות עבודה למגירות Legrabox</th>
+                        <th>עלות עבודה למגירות Scala</th>
+                        <th>מקדם למגירות Scala</th>
+                        <th>עלות מגירות פנימיות Scala</th>
+                        <th>עלות מגירות חיצוניות Scala</th>
+                        <th>עלות מגירות פנימיות Legrabox</th>
+                        <th>עלות מגירות חיצוניות Legrabox</th>
+                    </tr>
+                </thead>
+            </table>-->
+        </form>
+
+        <input type="button" value="חדש" class="btn btn-primary btn-lg" id="newBTN" />
+
+        <div id="editDiv"  >
+            <form id="constantsForm">
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="boxWorkCost"><span class="red-star">★ </span>עבודה לארגז</label>
+                        <input type="text" class="form-control" id="boxWorkCost" placeholder="הזן עבודה לארגז" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="lacquerWorkCost"><span class="red-star">★ </span>עבודה לציפוי</label>
+                        <input type="text" class="form-control" id="lacquerWorkCost" placeholder="הזן עבודה לציפוי" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="basicMaterialCoefficient"><span class="red-star">★ </span>עבודה לחומר בסיס</label>
+                        <input type="text" class="form-control" id="basicMaterialCoefficient" placeholder="הזן עבודה לחומר בסיס" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="drawerCoefficientCost"><span class="red-star">★ </span>מקדם למגירות</label>
+                        <input type="text" class="form-control" id="drawerCoefficientCost" placeholder="הזן מקדם למגירות" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="plateThickness"><span class="red-star">★ </span>עובי פלטה</label>
+                        <input type="text" class="form-control" id="plateThickness" placeholder="הזן עובי פלטה" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="railsCost"><span class="red-star">★ </span>עלות מסילות</label>
+                        <input type="text" class="form-control" id="railsCost" placeholder="הזן עלות מסילות" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="woodBoxDrawersWorkCost"><span class="red-star">★ </span>עלות מגירות עץ</label>
+                        <input type="text" class="form-control" id="woodBoxDrawersWorkCost" placeholder="הזן עלות מגירות עץ" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="LegraboxDrawerWork"><span class="red-star">★ </span>עלות עבודה למגירות Legrabox</label>
+                        <input type="text" class="form-control" id="LegraboxDrawerWork" placeholder="הזן עלות עבודה למגירות Legrabox" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="ScalaDrawerWork"><span class="red-star">★ </span>עלות עבודה למגירות Scala</label>
+                        <input type="text" class="form-control" id="ScalaDrawerWork" placeholder="הזן עלות עבודה למגירות Scala" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-3">
+                        <label for="ScalaCoefficient"><span class="red-star">★ </span>מקדם למגירות Scala</label>
+                        <input type="text" class="form-control" id="ScalaCoefficient" placeholder="הזן מקדם למגירות Scala" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="ScalaInternalRailsCost"><span class="red-star">★ </span>עלות מגירות פנימיות Scala</label>
+                        <input type="text" class="form-control" id="ScalaInternalRailsCost" placeholder="הזן עלות מגירות פנימיות Scala" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="ScalaExternalRailsCost"><span class="red-star">★ </span>עלות מגירות חיצוניות Scala</label>
+                        <input type="text" class="form-control" id="ScalaExternalRailsCost" placeholder="הזן עלות מגירות חיצוניות Scala" required min="1">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="LegraboxInternalRailsCost"><span class="red-star">★ </span>עלות מגירות פנימיות Legrabox</label>
+                        <input type="text" class="form-control" id="LegraboxInternalRailsCost" placeholder="הזן עלות מגירות פנימיות Legrabox" required min="1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-sm-12">
+                        <label for="LegraboxExternalRailsCost"><span class="red-star">★ </span>עלות מגירות חיצוניות Legrabox</label>
+                        <input type="text" class="form-control" id="LegraboxExternalRailsCost" placeholder="הזן עלות מגירות חיצוניות Legrabox" required min="1">
+                    </div>
+                </div>
+
+
+                <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">אישור</button>
+                <input type="button" class="btn btn-warning btn-lg" id="cancelSaveBTN" value="ביטול" />\
+
+
+
+            </form>
+    </div>
+</div>
+</body>
+</html>

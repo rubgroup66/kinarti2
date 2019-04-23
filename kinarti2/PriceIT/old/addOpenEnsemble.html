@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PriceIT</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="insert.html">הוסף ארגזת</a></li>
+                <li><a href="projectList.html">פרויקטים</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="direction:rtl">
+        <form id="pForm">
+
+            <h1>ספריה</h1>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                <h2>צבע</h2>
+                <h4>גוון</h4>
+                <div class="form-group">
+                    <label for="color">גוון</label>
+                    <input type="text" class="form-control" id="totalPrice" placeholder="גוון" />
+                </div>
+
+                <h4>עובי</h4>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">19
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">22
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">30
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">40
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">50
+                </label>
+            </div>
+            <br />
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h4>סוג פלטה</h4>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">פאנל
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">MDF
+                </label>
+            </div>
+            <br />
+
+            <h2>פורניר</h2>
+            <h4>סוג פורניר</h4>
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h4>סוג פורניר</h4>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">אלון
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">אגוז
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">מייפל
+                </label>
+            </div>
+
+
+            <h4>עובי</h4>
+            <label class="btn btn-secondary">
+                <input type="radio" name="options" id="option2" autocomplete="off">19
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" name="options" id="option3" autocomplete="off">22
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" name="options" id="option3" autocomplete="off">30
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" name="options" id="option3" autocomplete="off">40
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio" name="options" id="option3" autocomplete="off">50
+            </label>
+
+
+
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h4>סוג פלטה</h4>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off">פאנל
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off">MDF
+                </label>
+            </div>
+            <br />
+
+
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h2>מדפים</h2>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> מדפי תלייה
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> תלייה
+                </label>
+            </div>
+            <br />
+            <br />
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h2>מגירות</h2>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> ארגז מגירות
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> מגירות דופן
+
+                </label>
+            </div>
+
+            <h2>פרזולים</h2>
+            <h4>מגירות</h4>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h5>מגירות דופן</h5>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> 1
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> 2
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> 3
+                </label>
+            </div>
+            <br />
+            <br />
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h5>מובילי מגירה</h5>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> 1
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> 2
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> 3
+                </label>
+            </div>
+            <br />
+            <br />
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h4>צירים</h4>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> סוג 1
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> סוג 2
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> סוג 3
+                </label>
+            </div>
+            <br />
+            <br />
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h4>שונות</h4>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <h4>רגליים</h4>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option2" autocomplete="off"> סוג 1
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 2
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 3
+                    </label>
+                </div>
+                <br />
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <h4>קלפות</h4>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option2" autocomplete="off"> סוג 1
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 2
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 3
+                    </label>
+                </div>
+                <br />
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <h4>מיוחדים</h4>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option2" autocomplete="off"> סוג 1
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 2
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> סוג 3
+                    </label>
+                </div>
+                <br /><br />
+
+
+            </div>
+            <br />
+            <br />
+
+            <h1>חוץ ארון</h1>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h2>ציפויים</h2>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> מלמין
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> פורמייקה
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> צבע
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> פורניר
+                </label>
+            </div>
+            <br />
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <h2>השלמות</h2>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> דפנות
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> סגירות
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> קרניזים
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> סוקלית
+                </label>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label for="password">עיבודים מיוחדים</label>
+                <input type="password" class="form-control" id="password" placeholder="הוסף עיבודים מיוחדים" />
+            </div>
+            <div class="form-group">
+                <label for="price">מחיר</label>
+                <input type="number" class="form-control" id="price" placeholder="מחיר" />
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="form-group">
+                <label for="totalPrice">מחיר כולל</label>
+                <input type="number" class="form-control" id="totalPrice" placeholder="מחיר כולל" />
+            </div>
+            <input type="submit" value="צור ארון" />
+        </form>
+        <!--<div id="ph"></div>-->
+    </div>
+
+
+
+
+
+
+
+
+
+    <br />
+
+</body>
+</html>

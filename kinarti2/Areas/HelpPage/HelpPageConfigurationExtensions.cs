@@ -11,10 +11,10 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
-using kinarti2.Areas.HelpPage.ModelDescriptions;
-using kinarti2.Areas.HelpPage.Models;
+using kinarti.Areas.HelpPage.ModelDescriptions;
+using kinarti.Areas.HelpPage.Models;
 
-namespace kinarti2.Areas.HelpPage
+namespace kinarti.Areas.HelpPage
 {
     public static class HelpPageConfigurationExtensions
     {

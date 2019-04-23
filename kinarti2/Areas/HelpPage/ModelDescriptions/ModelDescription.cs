@@ -1,6 +1,6 @@
 using System;
 
-namespace kinarti2.Areas.HelpPage.ModelDescriptions
+namespace kinarti.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

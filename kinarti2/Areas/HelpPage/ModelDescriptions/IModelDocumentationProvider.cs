@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace kinarti2.Areas.HelpPage.ModelDescriptions
+namespace kinarti.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {

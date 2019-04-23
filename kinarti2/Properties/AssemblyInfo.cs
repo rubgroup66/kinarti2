@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("kinarti2")]
+[assembly: AssemblyTitle("kinarti")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("kinarti2")]
+[assembly: AssemblyProduct("kinarti")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("dbaa8b60-7e7f-4af3-86a4-c84512e39af2")]
+[assembly: Guid("4b9d456b-43bb-4789-b5cd-60a54c819332")]
 
 // Version information for an assembly consists of the following four values:
 //

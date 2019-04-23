@@ -1,4 +1,4 @@
-namespace kinarti2.Areas.HelpPage.ModelDescriptions
+namespace kinarti.Areas.HelpPage.ModelDescriptions
 {
     public class SimpleTypeModelDescription : ModelDescription
     {

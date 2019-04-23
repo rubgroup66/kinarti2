@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using kinarti2.Areas.HelpPage.ModelDescriptions;
-using kinarti2.Areas.HelpPage.Models;
+using kinarti.Areas.HelpPage.ModelDescriptions;
+using kinarti.Areas.HelpPage.Models;
 
-namespace kinarti2.Areas.HelpPage.Controllers
+namespace kinarti.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.

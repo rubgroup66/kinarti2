@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PriceIT</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            //ajaxCall("GET", "../api/architect", "", successGetArchitect, errorGetArchitect);
+            //ajaxCall("GET", "../api/supervisor", "", successGetSupervisor, errorGetSupervisor);
+            $("#pForm").submit(f1);
+        });
+
+        function AddMaterial() {
+            var selected = [];
+            $('#supervisor :selected').each(function () {
+                selected.push($(this).val());
+            });
+
+            //var selected = [];
+            //$('#architect :selected').each(function () {
+            //    selected.push($(this).val());
+            //});
+
+            Material = { // Note that the name of the fields must be identical to the names of the properties of the object in the server
+                Name: $("#name").val(),
+                Category: $("#category").val(),
+                Size: $("#size").val(),
+                Price: $("#price").val()
+            }
+            ajaxCall("POST", "../api/material", JSON.stringify(Material), success, error);
+
+        }
+
+        //function successGetSupervisor(supervisordata) {      
+        //    for (var i = 0; i < supervisordata.length; i++) {
+        //        $("#supervisor").append($("<option></option>").val(supervisordata[i].sup_id).html(supervisordata[i].sup_name));
+        //    }
+        //}
+
+        //function errorGetSupervisor(err) {
+        //    swal("Error in getting supervisors");
+        //}
+
+        //function successGetArchitect(architectdata) {
+        //    for (var i = 0; i < architectdata.length; i++) {
+        //        $("#architect").append($("<option></option>").val(architectdata[i].arc_id).html(architectdata[i].arc_name));
+        //    }
+        //}
+
+        //function errorGetArchitect(err) {
+        //    swal("Error in getting architect");
+        //}
+
+        function success(data) {
+            swal("Added Successfuly!", "נוסף בהצלחה", "success");
+        }
+
+        function error(err) {
+            alert("error");
+        }
+
+        function f1() {
+            AddMaterial();
+            return false; // the return false will prevent the form from being submitted
+            // hence the page will not reload
+        }
+
+    </script>
+
+</head>
+<body>
+
+
+
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="new_customer.html">פרויקט חדש</a></li>
+                <li><a href="projects_show.html">פרויקטים </a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+    <div class="container">
+        <form id="pForm">
+            <!--<h2>צור פרויקט חדש</h2>
+    <div class="form-group">
+        <label for="project_name">שם פרויקט</label>
+        <input type="text" class="form-control" id="project_name" placeholder="הכנס שם פרויקט ייחודי" required>
+    </div>
+    <div class="form-group">
+        <label for="first_name">שם פרטי</label>
+        <input type="text" class="form-control" id="first_name" placeholder="הכנס שם פרטי" required>
+    </div>
+    <div class="form-group">
+        <label for="last_name">שם משפחה</label>
+        <input type="text" class="form-control" id="last_name" placeholder="הכנס שם משפחה" required>
+    </div>
+    <div class="form-group">
+        <label for="phone_num">מספר טלפון</label>
+        <input type="text" class="form-control" id="phone_num" placeholder="הכנס מספר טלפון" required>
+    </div>
+    <div class="form-group">
+        <label for="email">כתובת דואר אלקטרוני</label>
+        <input type="email" class="form-control" id="email" placeholder="הכנס כתובת דואר אלקטרוני">
+    </div>
+    <div class="form-group" style="width:auto">
+        <label for="supervisor">מפקח</label>
+        <select id="supervisor" required></select>
+    </div>
+    <div class="form-group" style="width:auto">
+        <label for="architect">אדריכל</label>
+        <select id="architect" required></select>
+    </div>
+    <div id="ph"></div>
+    <br />-->
+            <!--<button class="btn btn-default" id="add">Add</button>-->
+            <!--<input type="submit" value="צור פרויקט" />-->
+
+
+
+            <h2>חומר גלם</h2>
+
+            <div class="form-group">
+                <label for="name">שם ציפוי</label>
+                <input type="text" class="form-control" id="name" placeholder="הזן שם ציפוי" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">קטגוריה</label>
+                <input type="text" class="form-control" id="category" placeholder="הזן קטגוריה"  value="" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">מחיר</label>
+                <input type="text" class="form-control" id="price" placeholder="הזן מחיר" value="20" required>
+            </div>
+
+            <div class="form-group">
+                <label for="size">מידות</label>
+                <input type="text" class="form-control" id="size" placeholder="הזן מידות"  value="20X30" required>
+            </div>
+
+
+
+            <div>
+                <label for="files">תמונה</label>
+                <input type="file" id="files" name="files" multiple="multiple" onchange="previewPicture()" />
+            </div>
+            <br />
+            <!--<button type="button" id="buttonUpload">Upload files</button>-->
+            <div id="ph"></div>
+            <br />
+            <br />
+            <!--<button class="btn btn-default" id="add">Add</button>-->
+            <input type="submit" value="עדכן" />
+        </form>
+    </div>
+
+
+</body>
+</html>

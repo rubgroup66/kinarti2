@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <title>PriceIT</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+     <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script>
+
+        // will run when the document is ready
+        $(document).ready(function () {
+
+            // once the document is ready we fetch a list of materials from the server
+            ajaxCall("GET", "../api/materials", "", getSuccess, error);
+            
+            $("#form").submit(f1); // wire the submit event to a function called f1
+            //$("#form").submit(onSubmitFunc); 
+            //$("#editDiv").hide();
+
+            mode = "";
+
+            $("#cancelSaveBTN").on("click", function () {
+                material = null;
+                //$("#editDiv").hide();
+                if (mode == "new")/* $("#pForm").show();*/
+                mode = "";
+            });
+
+            $("#newBTN").on("click", function () {
+                material = null;
+                mode = "new";
+                //$("#pForm").hide();
+                //$("#editDiv").show();
+                clearFields();
+                $("#editDiv :input").prop("disabled", false); // new mode: enable all controls in the form
+            });
+
+        });
+
+        function updateMaterial() { //this function will insert new material to DB or update existing one by mode status
+
+            //var radioVal = $("input[name='Premium']:checked").val();
+            //if (radioVal == "1")
+            //    var prem = true;
+            //else
+            //    var prem = false;
+            Material = { // Note that the name of the fields must be identical to the names of the properties of the object in the server
+                Name: $("#name").val(),
+                Type: $("#type").val(),
+                Cost: $("#cost").val(),
+                Coefficient: $("#coefficient").val(),
+             //   WorkCost: $("#workCost").val(),            
+            }
+
+
+            if (mode=="new") {
+
+                ajaxCall("POST", "../api/material", JSON.stringify(Material), success, error);
+            }
+            else
+                if (mode=="edit") {
+                    ajaxCall("PUT", "../api/materials/?Id=" + materialId, JSON.stringify(Material), successUpdate, error1);
+                }
+
+        }
+        function success(data) {
+            swal("Added Successfuly!", "Good luck in finding a partner", "success");
+        }
+        function error(err) {
+            alert("error in insert");
+        }
+
+
+        function error1() {
+            swal("Error in editing");
+        }
+
+        function successUpdate(data) {
+            swal("Updated Successfuly!", "Good luck in finding a partner", "success");
+        }
+
+        // wire all the buttons to their functions
+        function buttonEvents() {
+
+            $(document).on("click", ".editBtn", function () {
+                markSelected(this);
+                $("#editDiv").show();
+                $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
+                populateFields(this.getAttribute('data-materialId')); // fill the form fields according to the selected row
+            });
+
+            $(document).on("click", ".viewBtn", function () {
+                markSelected(this);
+                $("#editDiv").show();
+                row.className = 'selected';
+                $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form ***
+                populateFields(this.getAttribute('data-materialId'));
+            });
+
+            $(document).on("click", ".deleteBtn", function () {
+                markSelected(this);
+                var materialId = this.getAttribute('data-materialId');
+                swal({ // this will open a dialouge 
+                    title: "Are you sure ??",
+                    text: "",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                })
+                .then(function (willDelete) {
+                    if (willDelete) DeleteMaterial(materialId);
+                    else swal("Not Deleted!");
+                }); 
+            });
+        }
+
+        // mark the selected row
+        function markSelected(btn) {
+            $("#MaterialsTable").removeClass("selected"); // remove seleced class from rows that were selected before
+            row = (btn.parentNode).parentNode; // button is in TD which is in Row
+            row.className = 'selected'; // mark as selected
+        }
+
+        // Delete a car from the server
+        function DeleteMaterial(id) {
+            ajaxCall("DELETE", "../api/materials/" + id, "", deleteSuccess, error);
+        }
+
+        function onSubmitFunc() {
+            let materialAfterEdit = {
+                Id: material.Id,
+                /*Image: material.Image, */// for now we do not change the image
+                Name: $("#Name").val(),
+                Coefficient: $("#coefficient").val(),
+                Type: $("#type").val(),
+                Cost: $("#cost").val(),
+                Description: $("#Description").val(),
+                //Automatic: $("#automatic").is(":checked")
+            }
+
+            // update a new Car record to the server
+            ajaxCall("PUT", "../api/materials", JSON.stringify(materialAfterEdit), updateSuccess, error);
+            return false;
+        }
+
+        function f1() {
+            updateMaterial();
+            return false; // the return false will prevent the form from being submitted
+            // hence the page will not reload
+        }   
+
+        // fill the form fields
+        function populateFields(materialId) {
+            material = getMaterial(materialId);
+            $("#id").val(material.ID);
+            $("#name").val(material.Name);
+            $("#coefficient").val(material.Coefficient);
+            $("#type").val(material.Type);
+            $("#cost").val(material.Cost);
+            $("#Description").val("");
+            //$("#automatic").prop('checked', car.Automatic);
+            //$("#image").attr("src", "images/" + car.Image);
+        }
+
+        // fill the form fields
+        function clearFields() {
+            material = getMaterial("");
+            $("#id").val("");
+            $("#name").val("");
+            $("#coefficient").val("");
+            $("#type").val("");
+            $("#cost").val("");
+            $("#Description").val("");
+        }
+
+        // get a car according to its Id
+        function getMaterial(id) {
+            for (i in materials) {
+                if (materials[i].ID == id)
+                    return materials[i];
+            }
+            return null;
+        }
+
+        // success callback function after update
+        function updateSuccess(materialsdata) {
+            tbl.clear();
+            redrawTable(tbl, materialsdata);
+            buttonEvents();
+            //$("#editDiv").hide();
+            swal("עודכן בהצלחה!", "הפריט עודכן", "הצלחה");
+        }
+
+        // success callback function after delete
+        function deleteSuccess(materialsdata) {
+            tbl.clear();
+            redrawTable(tbl, materialsdata);
+            buttonEvents(); // after redrawing the table, we must wire the new buttons
+            //$("#editDiv").hide();
+            swal("Deleted Successfuly!", "Great Job", "success");
+        }
+
+        // redraw a datatable with new data
+        function redrawTable(tbl, data) {
+            tbl.clear();
+            for (var i = 0; i < data.length; i++) {
+                tbl.row.add(data[i]);
+            }
+            tbl.draw();
+        }
+
+        // this function is activated in case of a success
+        function getSuccess(materialsdata) {
+            console.log(materialsdata);
+            materials = materialsdata; // keep the cars array in a global variable;
+            try{
+                tbl = $('#materialsTable').DataTable({
+                    data: materialsdata,
+                    pageLength: 5,
+                    columns: [
+                        {
+                            render: function (data, type, row, meta) {
+                                let dataMaterial = "data-materialId='" + row.ID + "'";
+                               
+                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataMaterial + "> עדכן </button>";
+                                viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataMaterial + "> הצג </button>";
+                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataMaterial + "> מחק </button>";
+                                return editBtn + viewBtn + deleteBtn;
+                            }
+                        },
+                        { data: "Cost" },          
+                        { data: "Coefficient" },
+                        { data: "Type" },                       
+                        { data: "Name" },
+                        { data: "ID" },
+                    ],
+                });
+                buttonEvents();
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
+        // this function is activated in case of a failure
+        function error(err) {
+            swal("Error: " + err );
+        }
+    </script>
+
+</head>
+<body>
+    <!--<nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">מרכיבי פריטים</a>
+            </div>
+        </div>
+    </nav>-->
+
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="editMaterials.html">חומרי גלם</a></li>
+                <li><a href="editBoxes.html">ארגזות</a></li>
+                <li><a href="editHandles.html">ידיות</a></li>
+                <li><a href="editHinges.html">צירים</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <form id="pForm">
+            <table id="materialsTable" class="display nowrap" style="width:60%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>עלות</th>
+                        <th>מקדם החומר</th>
+                        <th>סוג</th>
+                        <th>שם</th>
+                        <th>מספר</th>
+                    </tr>
+                </thead>
+            </table>
+        </form>
+
+        <input type="button" value="חדש" class="btn btn-primary btn-lg" id="newBTN" />
+
+        <div id="editDiv" style="direction:rtl">
+            <form id="materialsForm">
+                <div class="form-group row">
+
+                    <div class="form-group col-sm-3">
+                        <label for="cost"><span class="red-star">★ </span>עלות</label>
+                        <input type="number" class="form-control" id="cost" placeholder="הזן את עלות החומר" required />
+                    </div>
+
+                    <div class="form-group col-sm-3">
+                        <label for="coefficient"><span class="red-star">★ </span>מקדם להכפלה</label>
+                        <input type="text" class="form-control" id="coefficient" placeholder="הזן מקדם מכפיל לסוג החומר" required>
+                    </div>
+
+                    <div class="form-group col-sm-3" id="typeRDB">
+                        <label for="typeRDB">סוג גמר</label> <br />
+                        <input type="radio" name="גמר חוץ" value="1" required> גמר חוץ<br />
+                        <input type="radio" name="גמר פנים" value="0"> גמר פנים<br />
+                    </div>
+
+                    <div class="form-group col-sm-3">
+                        <label for="name"><span class="red-star">★ </span>שם</label>
+                        <input type="text" class="form-control" id="name" placeholder="הזן את שם המוצר" required>
+                    </div>
+
+
+                    <div class="form-group col-sm-12">
+                        <label for="description"> תאור</label>
+                        <textarea class="form-control" id="description" placeholder="הזן תאור"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">הוסף</button>
+
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+</body>
+</html>

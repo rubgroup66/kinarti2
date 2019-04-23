@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tinder Datatable</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+        button {
+            margin-left: 10px;
+        }
+
+        img {
+            border: 0;
+            height: 30px;
+            position: inherit;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+
+        var projectsById = {}
+        // will run when the document is ready
+        $(document).ready(function () {
+            // once the document is ready we fetch a list of persons from the server
+            ajaxCall("GET", "../api/projects", "", successGetProjects, errorGetProjects);
+
+        });
+
+        function successGetProjects(projectsdata) {    // this function is activated in case of a success
+            for (var i = 0; i < projectsdata.length; i++) {
+                //$('#hobbies').append("<input type='checkbox' name = 'checkbox' value=" + hobbiesdata[i].Id + "> " + hobbiesdata[i].Name + "<br>");
+                //$("p").append("Some appended text."); (w3schools)
+                projectssById[projectsdata[i].Id] = projectsdata[i].Name;
+            }
+            /// Only when we have the hobbies data we can render persons table.
+            ajaxCall("GET", "../api/customers", "", getSuccess, error);
+        }
+
+        // this function is activated in case of a failure
+        function successGetProjects(err) {
+        }
+
+        function hobbieIdToName(id) {
+            return hobbiesById[id]
+        }
+
+        //// this should be used when the active value is changed
+        function buttonEvents() {
+            $(document).on("click", ".isActive", function () {
+                //alert($(this).data('personid'));
+                //Person = getPerson(this.getAttribute('data-PersonID'));
+                var isActive = $(this).is(':checked') ? 1 : 0; // replace with true value
+                var PersonId = $(this).data('personid'); //replace with the user id that clicked
+
+                ajaxCall("PUT", "../api/persons/?isActive=" + isActive + "&PersonId=" + PersonId, "", updateSuccess, error);
+            });
+        }
+
+        // fill the form fields
+        function populateFields(personName) {
+            Person = getPerson(personName);
+            $("#Name").val(Person.Name);
+            $("#FamilyName").val(Person.FamilyName);
+            //$("#Gender").val(Person.Gender);
+            //$("#Age").val(Person.Age);
+            //$("#Height").val(Person.Height);
+            $("#Address").val(Person.Address);
+            //if (Person.Image == "") {
+            //    if (Person.Gender == "Male") {
+            //        $("#image").attr("src", "Images/" + "male.jpg");
+            //    }
+            //    else {
+            //        $("#image").attr("src", "Images/" + "female.jpg");
+            //        //$("#image").attr("src", "Images/" + " toLowerCase()(" + Person.Gender+").jpg");
+            //    }
+            //}
+            //else {
+            //    $("#image").attr("src", "Images/" + Person.Image + ".jpg");
+            //}
+
+            //$("#IsActive").prop('checked', Person.IsActive);
+            //$("#IsPremium").prop('checked', Person.IsPremium);
+            $("#PhoneNumber").val(Person.PhoneNumber);
+        }
+
+        // success callback function after update
+        function updateSuccess() {
+            swal("Updated Successfuly!", "User is no longer active..", "success");
+        }
+
+        // this function is activated in case of a success
+        function getSuccess(customerdata) {
+            {
+                customers = customerdata;
+                try {
+                    tbl = $('#customerTbl').DataTable({
+                        data: persondata,
+                        pageLength: 10,
+                        columns: [
+                            { data: "ID" },
+                            { data: "Name" },
+                            { data: "FamilyName" },
+                            { data: "Address" },
+                            { data: "Phone" },
+                            { data: "Email" },
+
+                            //{
+                            //    data: "Hobbies",
+                            //    render: function (data, type, row, meta) {
+                            //        // data is an array
+                            //        var hobbiesString = "";
+                            //        for (var i = 0; i < data.length; i++) {
+                            //            var hobbieID = data[i];
+                            //            hobbiesString += hobbieIdToName(hobbieID) + ",\n";
+                            //        }
+                            //        return hobbiesString; //need to remove the last ","
+                            //        //return hobbiesString.slice(0, -1);
+                            //    },
+                            //},
+                            //{
+                            //    data: "IsPremium",
+                            //    render: function (data, type, row, meta) {// not for edit
+                            //        if (data == true)
+                            //            return '<input type="checkbox" checked disabled="disabled" />';
+                            //        else
+                            //            return '<input type="checkbox" disabled="disabled"/>';
+                            //    }
+                            //},
+                            //{
+                            //    data: "IsActive",
+                            //    render: function (data, type, row, meta) {
+                            //        let dataPerson = "data-personID='" + row.ID + "'";
+                            //        if (data == true)
+                            //            return '<input class="isActive" ' + dataPerson + ' type="checkbox" checked  />';
+                            //        else
+                            //            return '<input class="isActive" ' + dataPerson + ' type="checkbox" />';
+                            //    }
+                            //}
+                        ],
+                    });
+                    buttonEvents();
+                }
+                catch (err) {
+                    alert(err);
+                }
+            }
+        }
+        //get the right image for user
+        //function getImg(data, type, full, meta) {
+        //    var pic = "<img src='../Tinder/Images/" + full.Gender.toLowerCase() + ".jpg' />";
+        //    if (full.Image == "") {
+        //        return pic;
+        //    }
+        //    else {
+        //        return '<img src="' + full.Image + '"/>';
+        //    }
+        //}
+
+        function myTempHobbiesNames(hobiesdata) {// this function is activated in case of a success
+            var str = "";
+            foreach(item in Hobbies)
+            {
+                //for (var j = 0; j < data.length; j++) {
+                if (item != "")
+                    str += hobbiesdata[item].Name + ", ";
+            }
+            return str;
+        }
+
+        function errorGetHobbies(err) {
+        }
+
+        //// mark the selected row
+        //function markSelected(btn) {
+        //    $("#personsTbl tr").removeClass("selected"); // remove seleced class from rows that were selected before
+        //    row = (btn.parentNode).parentNode; // button is in TD which is in Row
+        //    row.className = 'selected'; // mark as selected
+        //}
+
+
+        function error(err) {// this function is activated in case of a failure
+            swal("Error: " + err);
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="insert.html">Add Project</a></li>
+                <li class="active"><a href="customersList.html">View Projects</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <form id="pForm">
+            <table id="customerTbl" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>מספר</th>
+                        <th> שם הלקוח</th>
+                        <th>שם משפחה</th>
+                        <th>כתובת</th>
+                        <th>טלפון</th>
+                        <th>מייל</th>
+                    </tr>
+                </thead>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

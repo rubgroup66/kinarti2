@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Description;
 
-namespace kinarti2.Areas.HelpPage
+namespace kinarti.Areas.HelpPage
 {
     public static class ApiDescriptionExtensions
     {

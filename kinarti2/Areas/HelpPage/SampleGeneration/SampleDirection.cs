@@ -1,4 +1,4 @@
-namespace kinarti2.Areas.HelpPage
+namespace kinarti.Areas.HelpPage
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response

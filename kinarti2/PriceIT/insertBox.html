@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PriceIT</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="calculation.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="insert.html">הוסף ארגזת</a></li>
+                <li><a href="projectList.html">פרויקטים</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="direction:rtl">
+        <form id="pForm">
+            <h1>שלד ארון</h1>
+            <br />
+            <!--<div class="form-group col-sm-4">
+        <label for="depth"><span class="red-star">★ </span>עומק</label>
+        <input type="number" class="form-control" id="depth" placeholder="עומק (סמ)" min="0" required onchange="calculateSquareMeter()">
+    </div>
+    <div class="form-group col-sm-4">
+        <label for="width"><span class="red-star">★ </span>רוחב</label>
+        <input type="number" class="form-control" id="width" placeholder="רוחב (סמ)" min="0" required>
+    </div>
+    <div class="form-group col-sm-4">
+        <label for="height"><span class="red-star">★ </span>גובה</label>
+        <input type="number" class="form-control" id="height" placeholder="אורך (סמ)" min="0" required>
+    </div>-->
+            <div class="form-group col-sm-6">
+                <label for="boxMaterial"><span class="red-star">★ </span>סוג החומר</label>
+                <select id="boxMaterial" class="form-control" required>
+                    <option value="">בחר סוג חומר</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="boxMeasures"><span class="red-star">★ </span>מידות</label>
+                <select id="boxMeasures" class="form-control" required>
+                    <option value="">בחר מידות ארגזת</option>
+                </select>
+            </div>
+            <br />
+            <br />
+            <div class="form-group col-sm-12">
+                <label for="partitions"><span class="red-star">★ </span>מחיצות</label>
+                <input type="number" class="form-control" id="partitions" placeholder="כמות מחיצות" value="0" min="0" required>
+            </div>
+            <br /><br />
+            <div class="form-group col-sm-6">
+                <label for="shelves"><span class="red-star">★ </span>מדפים</label>
+                <input type="number" class="form-control" id="shelves" placeholder="כמות מדפים" value="0" min="0" required>
+            </div>
+            <br />
+            <br />
+            <div class="form-group col-sm-6">
+                <label for="boxWoodDrawers"><span class="red-star">★ </span> ארגזי מגירה עץ</label>
+                <input type="number" class="form-control" id="boxWoodDrawers" placeholder="הזן מספר מגירות עץ" value="0" min="0" required>
+            </div>
+            <br />
+            <br /><br />
+            <h3>מגירות LegraBox</h3>
+            <div class="form-group col-sm-6">
+                <label for="internalLegraBoxDrawers"><span class="red-star">★ </span> כמות מגירות LegraBox פנימיות</label>
+                <input type="number" class="form-control" id="internalLegraBoxDrawers" placeholder="הזן כמות מגירות LegraBox פנימיות" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="externalLegraBoxDrawers"><span class="red-star">★ </span> כמות מגירות LegraBox חיצוניות</label>
+                <input type="number" class="form-control" id="externalLegraBoxDrawers" placeholder="הזן כמות מגירות חיצוניות" min="0" value="0" required>
+            </div>
+            <br /><br />
+            <h3>מגירות Scala</h3>
+            <div class="form-group col-sm-6">
+                <label for="internalScalaBoxDrawers"><span class="red-star">★ </span> כמות מגירות Scala פנימיות</label>
+                <input type="number" class="form-control" id="internalScalaBoxDrawers" placeholder="הזן כמות מגירות LegraBox פנימיות" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="externalScalaBoxDrawers"><span class="red-star">★ </span> כמות מגירות Scala חיצוניות</label>
+                <input type="number" class="form-control" id="externalScalaBoxDrawers" placeholder="הזן כמות מגירות Scala חיצוניות" min="0" value="0" required>
+            </div>
+            <br />
+            <br />
+            <br />
+            <div class="form-group col-sm-3" style="direction:rtl">
+                <label for="isDistanced"><span class="red-star">★ </span>הרחקה למגירה פנימית</label>
+                <input type="checkbox" class="form-control" id="isDistanced" checked />
+            </div>
+            <br /><br />
+            <br /> <br />
+            <h1>חזית</h1>
+            <div class="form-group col-sm-12">
+                <label for="facade"><span class="red-star">★ </span>סוג גמר</label>
+                <select id="facade" class="form-control" required>
+                    <!--<option value="">בחר סוג גמר</option>-->
+                    <option value="2019">ללא</option>
+                </select>
+            </div>
+            <br />
+            <br />
+            <h2>צירים</h2>
+            <div class="form-group col-sm-6">
+                <label for="hingesQuantity1"><span class="red-star">★ </span>כמות צירים מסוג 1</label>
+                <input type="number" class="form-control" id="hingesQuantity1" placeholder="הזן כמות צירים מסוג 1" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="hingesType1"><span class="red-star">★ </span>סוג ציר 1</label>
+                <select id="hingesType1" class="form-control" required>
+                    <!--<option value="">בחר סוג ציר 1</option>-->
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+            <br />
+            <br />
+            <div class="form-group col-sm-6">
+                <label for="hingesQuantity2"><span class="red-star">★ </span>כמות צירים מסוג 2</label>
+                <input type="number" class="form-control" id="hingesQuantity2" placeholder="הזן כמות צירים מסוג 2" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="hingesType2"><span class="red-star">★ </span>סוג ציר 2</label>
+                <select id="hingesType2" class="form-control" required>
+                    <!--<option value="">בחר סוג ציר 2</option>-->
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+            <br /><br />
+            <h2>דופן נוסף</h2>
+            <div class="form-group col-sm-6">
+                <label for="extraWallQuantity"><span class="red-star">★ </span>הזן כמות דפנות נוספות</label>
+                <input type="number" class="form-control" id="extraWallQuantity" placeholder="הזן כמות דפנות נוספות" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="extraWallType"><span class="red-star">★ </span> סוג גמר לדופן נוסף</label>
+                <select id="extraWallType" class="form-control">
+                    <!--<option value="">בחר סוג דופן</option>-->
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+            <br />
+            <br />
+            <h2>ידיות</h2>
+            <div class="form-group col-sm-6">
+                <label for="handlesQuantity"><span class="red-star">★ </span>כמות ידיות</label>
+                <input type="number" class="form-control" id="handlesQuantity" placeholder="הזן כמות ידיות" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="handlesType"><span class="red-star">★ </span>סוג ידיות</label>
+                <select id="handlesType" class="form-control" required>
+                    <!--<option value="">בחר סוג ידיות</option>-->
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+
+
+            <h2>פרזול</h2>
+            <div class="form-group col-sm-6">
+                <label for="ironWorksQuantity1"><span class="red-star">★ </span>כמות</label>
+                <input type="number" class="form-control" id="ironWorksQuantity1" placeholder="הזן כמות פרזולים" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="ironWorksType1"><span class="red-star">★ </span>סוג פרזול</label>
+                <select id="ironWorksType1" class="form-control" required>
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="ironWorksQuantity2"><span class="red-star">★ </span>כמות</label>
+                <input type="number" class="form-control" id="ironWorksQuantity2" placeholder="הזן כמות פרזולים" min="0" value="0" required>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="ironWorksType2"><span class="red-star">★ </span>סוג פרזול</label>
+                <select id="ironWorksType2" class="form-control" required>
+                    <option value="0">ללא</option>
+                </select>
+            </div>
+
+            <br />
+            <br />
+            <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">הוסף</button>
+            <br />
+            <br />
+        </form>
+    </div>
+</body>
+</html>

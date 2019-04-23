@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace kinarti2.Areas.HelpPage.ModelDescriptions
+namespace kinarti.Areas.HelpPage.ModelDescriptions
 {
     internal static class ModelNameHelper
     {

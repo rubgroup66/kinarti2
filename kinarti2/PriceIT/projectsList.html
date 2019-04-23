@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DataTable Example</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+    </style>
+
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            // once the document is ready we fetch a list of customers from the server
+            ajaxCall("GET", "../api/Customers", "", successGetCustomers, errorGetCustomers);
+
+
+            
+        });
+
+        function successGetCustomers(data) {
+            $('#projects_table').DataTable({
+                data: data,
+                "autoWidth": false,
+                columns: [
+                    { data: "project_name" },
+                    { data: "first_name" },
+                    { data: "last_name" },
+                    { data: "phone_num" },
+                    { data: "email" },
+                    { data: "supervisor" },
+                    { data: "architect"},
+                ]
+            })
+        }
+        function errorGetCustomers(err) {
+            swal("Error getting customers");
+        }
+
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">PriceIT</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="new_customer.html">פרויקט חדש</a></li>
+                <li class="active"><a href="projects_show.html">פרויקטים</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <form id="pForm">
+            <table id="projects_table" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+
+                        <th>שם פרויקט </th>
+                        <th> שם פרטי</th>
+                        <th>שם משפחה</th>
+                        <th>מספר טלפון</th>
+                        <th>מפקח</th>
+                        <th>אדריכל</th>
+
+
+                    </tr>
+                </thead>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
